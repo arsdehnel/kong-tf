@@ -3,7 +3,7 @@
 ################################
 resource "aws_security_group" "cassandra" {
 
-    name        = "sg_cassandra_instance"
+    name        = "sg_${var.stack_name}_cassandra_instance"
     description = "Internal proxy security"
     vpc_id      = "${aws_vpc.kong_qa.id}"
 
@@ -15,7 +15,7 @@ resource "aws_security_group" "cassandra" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    }  
+    }
 
     ###############
     # public      #
@@ -79,7 +79,7 @@ resource "aws_security_group" "cassandra" {
 resource "aws_instance" "cassandra" {
 
 	instance_type = "c3.large"
-	key_name = "${aws_key_pair.kong-qa.id}"
+	key_name = "${var.key_name}"
 
 	# Lookup the correct AMI based on the region we specified
 	ami = "${lookup(var.aws_cassandra_amis, var.aws_region)}"
@@ -92,7 +92,7 @@ resource "aws_instance" "cassandra" {
 	subnet_id = "${aws_subnet.cassandra_qa_subnet.id}"
 
     tags {
-        Name = "Cassandra"
+        Name = "${var.stack_name}-cassandra"
         Application = "Kong"
         Environment = "QA"
     }

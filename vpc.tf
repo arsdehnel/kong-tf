@@ -4,7 +4,7 @@
 resource "aws_vpc" "kong_qa" {
   	cidr_block = "10.0.0.0/16"
 	tags {
-		Name = "VPC"
+		Name = "${var.stack_name}_VPC"
 		Application = "Kong"
 		Environment = "QA"
     }
@@ -16,7 +16,7 @@ resource "aws_vpc" "kong_qa" {
 resource "aws_internet_gateway" "kong_qa" {
 	vpc_id = "${aws_vpc.kong_qa.id}"
 	tags {
-		Name = "IGW"
+		Name = "${var.stack_name}_IGW"
 		Application = "Kong"
         Environment = "QA"
     }
@@ -38,7 +38,7 @@ resource "aws_subnet" "public_qa_subnet" {
 	vpc_id                  = "${aws_vpc.kong_qa.id}"
 	cidr_block              = "10.0.3.0/24"
 	tags {
-		Name = "Public"
+		Name = "${var.stack_name}_public"
 		Application = "Kong"
 		Environment = "QA"
     }
@@ -55,7 +55,7 @@ resource "aws_subnet" "proxy_qa_subnet" {
 	vpc_id                  = "${aws_vpc.kong_qa.id}"
 	cidr_block              = "10.0.1.0/24"
 	tags {
-		Name = "Proxy"
+		Name = "${var.stack_name}_proxy"
 		Application = "Kong"
 		Environment = "QA"
     }
@@ -72,7 +72,7 @@ resource "aws_subnet" "cassandra_qa_subnet" {
 	vpc_id                  = "${aws_vpc.kong_qa.id}"
 	cidr_block              = "10.0.2.0/24"
 	tags {
-		Name = "Cassandra"
+		Name = "${var.stack_name}_cassandra"
 		Application = "Kong"
 		Environment = "QA"
     }

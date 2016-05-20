@@ -84,6 +84,7 @@ module "dashboard" {
 module "proxy" {
     source                  = "module-proxy"
 
+    # depends_on              = "${module.cassandra.id}"
     environment             = "${var.environment}"
     stack_name              = "${var.stack_name}"
     key_pair_id             = "${aws_key_pair.kong.id}"
@@ -93,6 +94,8 @@ module "proxy" {
     private_key_path        = "${var.private_key_path}"   
     elb_sec_grp_id          = "${module.elb.security_group_id}" 
     name_prefix             = "${var.name_prefix}"
+    cassandra_instance_id   = "${module.cassandra.id}"
+    depends_id              = "${module.cassandra.depends_id}"
 }
 
 module "cassandra" {

@@ -5,9 +5,10 @@ variable "key_pair_id" {}
 variable "proxy_subnet_id" {}
 variable "proxy_ami" {}
 variable "private_key_path" {}
-# variable "cassandra_instance_id" {}
+variable "cassandra_instance_id" {}
 variable "elb_sec_grp_id" {}
 variable "name_prefix" {}
+variable "depends_id" {}
 
 resource "aws_security_group" "proxy" {
   name        = "${var.name_prefix}sg_proxy"

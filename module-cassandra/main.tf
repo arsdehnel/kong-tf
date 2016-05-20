@@ -104,3 +104,9 @@ resource "aws_instance" "cassandra" {
     }
 
 }
+
+resource "null_resource" "dummy_dependency" {
+  depends_on = ["aws_instance.cassandra"]
+}
+
+output "depends_id" { value = "${null_resource.dummy_dependency.id}" }

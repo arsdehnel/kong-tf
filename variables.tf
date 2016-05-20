@@ -2,6 +2,7 @@
 variable "access_key" {}
 variable "secret_key" {}
 variable "key_name" {}
+variable "key_file" {}
 variable "stack_name" {
     default = "terraform-kong"
 }

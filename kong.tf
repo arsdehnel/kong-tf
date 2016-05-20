@@ -112,7 +112,7 @@ resource "aws_instance" "proxy" {
     connection {
         # bastion_host = "${aws_instance.bastion.id}"
         user = "ec2-user"
-        key_file = "~/.ssh/kong-qa"
+        key_file = "~/.ssh/${var.key_file}"
         timeout = "1m"
     }
 

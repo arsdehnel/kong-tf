@@ -1,8 +1,10 @@
 # initialize these but they really get their values from the terraform.tfvars
-variable "public_key" {}
 variable "access_key" {}
 variable "secret_key" {}
-
+variable "key_name" {}
+variable "stack_name" {
+    default = "terraform-kong"
+}
 
 variable "aws_region" {
     default = "us-west-2"

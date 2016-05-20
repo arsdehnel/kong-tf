@@ -1,0 +1,3 @@
+access_key = "AWS Access Key Goes Here"
+secret_key = "AWS Secret Access Key Goes Here"
+key_name = "Keypair Name Goes Here"

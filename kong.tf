@@ -2,7 +2,7 @@
 #  ELB                         #
 ################################
 resource "aws_security_group" "elb" {
-  name        = "sg_proxy_elb"
+  name        = "sg_${var.stack_name}_proxy_elb"
   description = "Public facing ELB security"
   vpc_id      = "${aws_vpc.kong_qa.id}"
 
@@ -24,7 +24,7 @@ resource "aws_security_group" "elb" {
 }
 
 resource "aws_elb" "kong_elb" {
-  name = "proxy-elb"
+  name = "${var.stack_name}-proxy-elb"
 
   subnets         = ["${aws_subnet.public_qa_subnet.id}"]
   security_groups = ["${aws_security_group.elb.id}"]
@@ -58,7 +58,7 @@ resource "aws_elb" "kong_elb" {
 #  KONG INSTANCES              #
 ################################
 resource "aws_security_group" "proxy" {
-  name        = "sg_proxy_instance"
+  name        = "sg_${var.stack_name}_proxy_instance"
   description = "Internal proxy security"
   vpc_id      = "${aws_vpc.kong_qa.id}"
 
@@ -95,7 +95,7 @@ resource "aws_security_group" "proxy" {
     protocol        = "tcp"
     cidr_blocks     = ["0.0.0.0/0"]
     self            = true
-  }  
+  }
 
   # outbound internet access
   egress {
@@ -117,7 +117,7 @@ resource "aws_instance" "proxy" {
     }
 
 	instance_type = "t2.micro"
-	key_name = "${aws_key_pair.kong-qa.id}"
+	key_name = "${var.key_name}"
 	ami = "${lookup(var.aws_kong_amis, var.aws_region)}"
 	vpc_security_group_ids = ["${aws_security_group.proxy.id}"]
     subnet_id = "${aws_subnet.proxy_qa_subnet.id}"
@@ -132,7 +132,7 @@ resource "aws_instance" "proxy" {
     }
 
     tags {
-        Name = "Proxy"
+        Name = "${var.stack_name}-proxy"
         Application = "Kong"
         Environment = "QA"
     }

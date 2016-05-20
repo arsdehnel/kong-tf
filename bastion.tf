@@ -1,5 +1,5 @@
 resource "aws_security_group" "bastion" {
-  name = "bastion"
+  name = "${var.stack_name}_bastion"
   description = "Allow SSH traffic from the internet"
   vpc_id = "${aws_vpc.kong_qa.id}"
 
@@ -9,11 +9,10 @@ resource "aws_security_group" "bastion" {
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-
 }
 
 resource "aws_security_group" "allow_access_from_bastion" {
-  name = "allow-access-from-bastion"
+  name = "${var.stack_name}-allow-access-from-bastion"
   description = "Grants access to SSH from bastion server"
   vpc_id = "${aws_vpc.kong_qa.id}"
 
@@ -33,7 +32,7 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = ["${aws_security_group.bastion.id}"]
 
   tags {
-    Name = "Bastion"
+    Name = "${var.stack_name}-bastion"
     Application = "Kong"
     Environment = "QA"
   }

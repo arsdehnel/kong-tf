@@ -1,5 +1,5 @@
 variable "name" {}
-variable "application" {}
+variable "stack_name" {}
 variable "environment" {}
 variable "cidr" {}
 variable "vpc_id" {}
@@ -15,8 +15,8 @@ resource "aws_subnet" "standard" {
 
 	tags {
 		Name = "${var.name}"
-		Application = "${var.application}"
-		Environment = "${var.environment}"
+		stack_name = "${var.stack_name}"
+		environment = "${var.environment}"
     }
 }
 

@@ -1,4 +1,4 @@
-variable "application" {}
+variable "stack_name" {}
 variable "environment" {}
 variable "name_prefix" {}
 
@@ -8,9 +8,9 @@ variable "name_prefix" {}
 resource "aws_vpc" "main" {
   	cidr_block = "10.0.0.0/16"
 	tags {
-		Name = "${var.name_prefix}${var.application} - ${var.environment}"
-		Application = "${var.application}"
-		Environment = "${var.environment}"
+		Name = "${var.name_prefix}${var.stack_name} - ${var.environment}"
+		stack_name = "${var.stack_name}"
+		environment = "${var.environment}"
     }
 }
 
@@ -20,9 +20,9 @@ resource "aws_vpc" "main" {
 resource "aws_internet_gateway" "main" {
 	vpc_id = "${aws_vpc.main.id}"
 	tags {
-		Name = "${var.name_prefix}IGW"
-		Application = "${var.application}"
-        Environment = "${var.environment}"
+		Name = "${var.name_prefix}igw"
+		stack_name = "${var.stack_name}"
+        environment = "${var.environment}"
     }
 }
 

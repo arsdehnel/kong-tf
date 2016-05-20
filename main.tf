@@ -13,7 +13,7 @@ module "vpc" {
     source           = "module-vpc"
 
     environment      = "${var.environment}"
-    application      = "${var.application}"
+    stack_name       = "${var.stack_name}"
     name_prefix      = "${var.name_prefix}"
 }
 
@@ -25,7 +25,7 @@ module "public_subnet" {
     route_table_id   = "${module.vpc.main_route_table_id}"
     az               = "${var.aws_az}"
     environment      = "${var.environment}"
-    application      = "${var.application}"
+    stack_name       = "${var.stack_name}"
     name             = "${var.name_prefix}Public"
     public           = true
 }
@@ -38,7 +38,7 @@ module "proxy_subnet" {
     route_table_id   = "${module.vpc.main_route_table_id}"
     az               = "${module.public_subnet.az}"
     environment      = "${var.environment}"
-    application      = "${var.application}"
+    stack_name       = "${var.stack_name}"
     name             = "${var.name_prefix}Proxy"
     public           = true
 }
@@ -51,7 +51,7 @@ module "cassandra_subnet" {
     route_table_id   = "${module.vpc.main_route_table_id}"
     az               = "${module.public_subnet.az}"
     environment      = "${var.environment}"
-    application      = "${var.application}"
+    stack_name       = "${var.stack_name}"
     name             = "${var.name_prefix}Cassandra"
     public           = true
 }
@@ -60,7 +60,7 @@ module "bastion" {
     source           = "module-bastion"
 
     environment      = "${var.environment}"
-    application      = "${var.application}"
+    stack_name       = "${var.stack_name}"
     key_pair_id      = "${aws_key_pair.kong.id}"
     bastion_ami      = "${lookup(var.aws_amis, var.aws_region)}"
     vpc_id           = "${module.vpc.vpc_id}"
@@ -72,7 +72,7 @@ module "dashboard" {
     source           = "module-dashboard"
 
     environment      = "${var.environment}"
-    application      = "${var.application}"
+    stack_name       = "${var.stack_name}"
     key_pair_id      = "${aws_key_pair.kong.id}"
     dashboard_ami    = "${lookup(var.aws_amis, var.aws_region)}"
     vpc_id           = "${module.vpc.vpc_id}"
@@ -85,7 +85,7 @@ module "proxy" {
     source                  = "module-proxy"
 
     environment             = "${var.environment}"
-    application             = "${var.application}"
+    stack_name              = "${var.stack_name}"
     key_pair_id             = "${aws_key_pair.kong.id}"
     proxy_ami               = "${lookup(var.aws_kong_amis, var.aws_region)}"
     vpc_id                  = "${module.vpc.vpc_id}"
@@ -99,7 +99,7 @@ module "cassandra" {
     source                  = "module-cassandra"
 
     environment             = "${var.environment}"
-    application             = "${var.application}"
+    stack_name              = "${var.stack_name}"
     key_pair_id             = "${aws_key_pair.kong.id}"
     cassandra_ami           = "${lookup(var.aws_cassandra_amis, var.aws_region)}"
     vpc_id                  = "${module.vpc.vpc_id}"
@@ -113,7 +113,7 @@ module "elb" {
 	source                  = "module-elb"
 
 	environment             = "${var.environment}"
-	application             = "${var.application}"
+	stack_name              = "${var.stack_name}"
     vpc_id                  = "${module.vpc.vpc_id}"
 	public_subnet_id        = "${module.public_subnet.id}"
 	proxy_instance_id       = "${module.proxy.instance_id}"

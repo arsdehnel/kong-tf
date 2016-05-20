@@ -1,4 +1,4 @@
-variable "application" {}
+variable "stack_name" {}
 variable "environment" {}
 variable "vpc_id" {}
 variable "public_subnet_id" {}
@@ -6,7 +6,7 @@ variable "proxy_instance_id" {}
 variable "name_prefix" {}
 
 resource "aws_security_group" "elb" {
-  name        = "${var.name_prefix}SG ELB"
+  name        = "${var.name_prefix}sg_elb"
   description = "ELB security"
   vpc_id      = "${var.vpc_id}"
 
@@ -43,15 +43,14 @@ resource "aws_security_group" "elb" {
   }
 
   tags {
-    Application = "${var.application}"
-    Environment = "${var.environment}"
+    stack_name = "${var.stack_name}"
+    environment = "${var.environment}"
   }
-
 
 }
 
 resource "aws_elb" "elb" {
-  # name = "${var.name_prefix}ELB"
+  name = "${var.stack_name}-${var.environment}-public-elb"
 
   subnets             = ["${var.public_subnet_id}"]
   security_groups     = ["${aws_security_group.elb.id}"]
@@ -80,9 +79,9 @@ resource "aws_elb" "elb" {
   }
 
   tags {
-    Name        = "${var.name_prefix}ELB"
-    Application = "${var.application}"
-    Environment = "${var.environment}"
+    Name        = "${var.name_prefix}elb"
+    stack_name = "${var.stack_name}"
+    environment = "${var.environment}"
   }
 
 }

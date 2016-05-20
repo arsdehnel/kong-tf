@@ -1,4 +1,4 @@
-variable "application" {}
+variable "stack_name" {}
 variable "environment" {}
 variable "vpc_id" {}
 variable "key_pair_id" {}
@@ -7,7 +7,7 @@ variable "bastion_ami" {}
 variable "name_prefix" {}
 
 resource "aws_security_group" "bastion" {
-  name = "${var.name_prefix}Bastion"
+  name = "${var.name_prefix}sg_bastion"
   description = "Allow SSH traffic from the internet"
   vpc_id = "${var.vpc_id}"
 
@@ -19,14 +19,14 @@ resource "aws_security_group" "bastion" {
   }
 
   tags {
-    Application = "${var.application}"
-    Environment = "${var.environment}"
+    stack_name = "${var.stack_name}"
+    environment = "${var.environment}"
   }  
 
 }
 
 resource "aws_security_group" "allow_access_from_bastion" {
-  name = "${var.name_prefix}Allow Access From Bastion"
+  name = "${var.name_prefix}sg_allow_access_from_bastion"
   description = "Grants access to SSH from bastion server"
   vpc_id = "${var.vpc_id}"
 
@@ -45,8 +45,8 @@ resource "aws_security_group" "allow_access_from_bastion" {
   }
 
   tags {
-    Application = "${var.application}"
-    Environment = "${var.environment}"
+    stack_name = "${var.stack_name}"
+    environment = "${var.environment}"
   }
 
 }
@@ -59,9 +59,9 @@ resource "aws_instance" "bastion" {
   vpc_security_group_ids = ["${aws_security_group.bastion.id}"]
 
   tags {
-    Name = "${var.name_prefix}Bastion"
-    Application = "${var.application}"
-    Environment = "${var.environment}"
+    Name = "${var.name_prefix}bastion"
+    stack_name = "${var.stack_name}"
+    environment = "${var.environment}"
   }
 }
 

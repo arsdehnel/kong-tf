@@ -1,4 +1,4 @@
-variable "application" {}
+variable "stack_name" {}
 variable "environment" {}
 variable "vpc_id" {}
 variable "key_pair_id" {}
@@ -8,7 +8,7 @@ variable "private_key_path" {}
 variable "name_prefix" {}
 
 resource "aws_security_group" "dashboard" {
-  name        = "${var.name_prefix}SG Dashboard"
+  name        = "${var.name_prefix}sg_dashboard"
   description = "Dashboard security"
   vpc_id      = "${var.vpc_id}"
 
@@ -43,10 +43,9 @@ resource "aws_security_group" "dashboard" {
   }
 
   tags {
-    Application = "${var.application}"
-    Environment = "${var.environment}"
+    stack_name = "${var.stack_name}"
+    environment = "${var.environment}"
   }
-
 
 }
 
@@ -69,9 +68,9 @@ resource "aws_instance" "dashboard" {
     }
 
     tags {
-        Name = "${var.name_prefix}Dashboard"
-        Application = "${var.application}"
-        Environment = "${var.environment}"
+        Name = "${var.name_prefix}dashboard"
+        stack_name = "${var.stack_name}"
+        environment = "${var.environment}"
     }
 
 }

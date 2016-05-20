@@ -1,4 +1,4 @@
-variable "application" {}
+variable "stack_name" {}
 variable "environment" {}
 variable "vpc_id" {}
 variable "key_pair_id" {}
@@ -10,7 +10,7 @@ variable "elb_sec_grp_id" {}
 variable "name_prefix" {}
 
 resource "aws_security_group" "proxy" {
-  name        = "${var.name_prefix}Proxy"
+  name        = "${var.name_prefix}sg_proxy"
   description = "Internal proxy security"
   vpc_id      = "${var.vpc_id}"
 
@@ -58,8 +58,8 @@ resource "aws_security_group" "proxy" {
   }
 
   tags {
-    Application = "${var.application}"
-    Environment = "${var.environment}"
+    stack_name = "${var.stack_name}"
+    environment = "${var.environment}"
   }
 
 }
@@ -84,9 +84,9 @@ resource "aws_instance" "proxy" {
     }
 
     tags {
-        Name = "${var.name_prefix}Proxy"
-        Application = "${var.application}"
-        Environment = "${var.environment}"
+        Name = "${var.name_prefix}proxy"
+        stack_name = "${var.stack_name}"
+        environment = "${var.environment}"
     }
 
 }

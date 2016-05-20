@@ -1,4 +1,4 @@
-variable "application" {}
+variable "stack_name" {}
 variable "environment" {}
 variable "vpc_id" {}
 variable "key_pair_id" {}
@@ -10,7 +10,7 @@ variable "name_prefix" {}
 
 resource "aws_security_group" "cassandra" {
 
-    name        = "${var.name_prefix}SG Cassandra"
+    name        = "${var.name_prefix}sg_cassandra"
     description = "Internal proxy security"
     vpc_id      = "${var.vpc_id}"
 
@@ -71,6 +71,11 @@ resource "aws_security_group" "cassandra" {
     #     cidr_blocks = ["${var.source_cidr_block}"]
     # }
 
+    tags {
+        stack_name = "${var.stack_name}"
+        environment = "${var.environment}"
+    }
+
 }
 
 resource "aws_instance" "cassandra" {
@@ -93,9 +98,9 @@ resource "aws_instance" "cassandra" {
     # }
 
     tags {
-        Name = "${var.name_prefix}Cassandra"
-        Application = "${var.application}"
-        Environment = "${var.environment}"
+        Name = "${var.name_prefix}cassandra"
+        stack_name = "${var.stack_name}"
+        environment = "${var.environment}"
     }
 
 }

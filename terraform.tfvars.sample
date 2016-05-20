@@ -1,0 +1,5 @@
+access_key = "AWS Access Key Goes Here"
+secret_key = "AWS Secret Access Key Goes Here"
+key_name = "Keypair Name Goes Here"
+public_key_path = "Keypair pub file path"
+private_key_path = "Keypair pem file path"

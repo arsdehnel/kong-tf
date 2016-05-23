@@ -7,6 +7,8 @@ variable "name_prefix" {}
 ################################
 resource "aws_vpc" "main" {
   	cidr_block = "10.0.0.0/16"
+  	enable_dns_hostnames = true
+  	
 	tags {
 		Name = "${var.name_prefix}${var.stack_name} - ${var.environment}"
 		stack_name = "${var.stack_name}"

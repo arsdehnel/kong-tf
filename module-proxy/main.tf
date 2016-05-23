@@ -52,9 +52,9 @@ resource "aws_security_group" "proxy" {
 
   # outbound internet access
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port   = 1
+    to_port     = 65535
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -78,11 +78,25 @@ resource "aws_instance" "proxy" {
     key_name = "${var.key_pair_id}"
     ami = "${var.proxy_ami}"
     vpc_security_group_ids = ["${aws_security_group.proxy.id}"]
+    # vpc_security_group_ids = ["sg-ff31df99"]
+    # associate_public_ip_address = true
     subnet_id = "${var.proxy_subnet_id}"
+
+    # provisioner "local-exec" {
+    #   inline = [
+    #     "scp -i ~/.ssh/kong module-proxy/kong-config.yml ec2-user@54.187.141.28:/home/ec2-user/kong.yml"
+    #   ]
+    # }
 
     provisioner "remote-exec" {
         script = "${path.module}/startup.sh"
     }
+
+    # provisioner "remote-exec" {
+    #   inline = [
+    #     "/usr/local/bin/kong start -c /home/ec2-user/kong.yml"
+    #   ]
+    # }
 
     tags {
         Name = "${var.name_prefix}proxy"

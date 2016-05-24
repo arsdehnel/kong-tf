@@ -23,22 +23,14 @@ resource "aws_security_group" "proxy" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # health check port from ELB
-  ingress {
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
-    cidr_blocks     = ["0.0.0.0/0"]
-    security_groups = [ "${var.elb_sec_grp_id}" ]
-  }
-
   # proxy and admin access from ELB
   ingress {
     from_port       = 8000
     to_port         = 8001
     protocol        = "tcp"
-    cidr_blocks     = ["0.0.0.0/0"]
-    security_groups = [ "${var.elb_sec_grp_id}" ]
+    # cidr_blocks     = ["0.0.0.0/0"]
+    # security_groups = [ "sg-0131df67" ]
+    security_groups = [ "${var.elb_sec_grp_id}"]
   }
 
   # kong clustering communication
@@ -48,6 +40,7 @@ resource "aws_security_group" "proxy" {
     protocol        = "tcp"
     cidr_blocks     = ["0.0.0.0/0"]
     self            = true
+    # security_groups  = ["sg-0131df67"] 
   }  
 
   # outbound internet access
@@ -79,13 +72,11 @@ resource "aws_instance" "proxy" {
     ami = "${var.proxy_ami}"
     vpc_security_group_ids = ["${aws_security_group.proxy.id}"]
     # vpc_security_group_ids = ["sg-ff31df99"]
-    # associate_public_ip_address = true
+    associate_public_ip_address = true
     subnet_id = "${var.proxy_subnet_id}"
 
     # provisioner "local-exec" {
-    #   inline = [
-    #     "scp -i ~/.ssh/kong module-proxy/kong-config.yml ec2-user@54.187.141.28:/home/ec2-user/kong.yml"
-    #   ]
+    #     command = "scp -i ${var.private_key_path} ${path.module}/kong-config.yml ec2-user@${aws_instance.proxy.public_ip}:/home/ec2-user/kong.yml"
     # }
 
     provisioner "remote-exec" {
@@ -105,3 +96,17 @@ resource "aws_instance" "proxy" {
     }
 
 }
+
+# resource "null_resource" "proxy_startup" {
+#     depends_on = ["aws_instance.proxy"]
+
+#     provisioner "local-exec" {
+#       command = "scp -o StrictHostKeyChecking=no -i ${var.private_key_path} ${path.module}/kong-config.yml ec2-user@${aws_instance.proxy.public_ip}:/home/ec2-user/kong.yml"
+#     }
+
+#     # provisioner "remote-exec" {
+#     #     script = "${path.module}/startup.sh"
+#     # }
+
+# }
+

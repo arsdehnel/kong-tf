@@ -117,7 +117,7 @@
 database: cassandra
 cassandra:
   contact_points:
-    - ec2-54-186-170-215.us-west-2.compute.amazonaws.com
+    - ec2-54-186-44-46.us-west-2.compute.amazonaws.com
     
   ######
   ## Contact points to your Cassandra cluster.

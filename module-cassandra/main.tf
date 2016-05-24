@@ -92,6 +92,7 @@ resource "aws_instance" "cassandra" {
 	vpc_security_group_ids = ["${aws_security_group.cassandra.id}"]
     subnet_id = "${var.cassandra_subnet_id}"
     user_data = "--clustername kong-qa --totalnodes 1 --version community"
+    associate_public_ip_address = true
 
     # provisioner "remote-exec" {
     #     script = "${path.module}/startup.sh"

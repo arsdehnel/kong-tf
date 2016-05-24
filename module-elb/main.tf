@@ -57,7 +57,7 @@ resource "aws_elb" "elb" {
   instances           = ["${var.proxy_instance_id}"]
 
   listener {
-    instance_port     = 80
+    instance_port     = 8000
     instance_protocol = "http"
     lb_port           = 80
     lb_protocol       = "http"
@@ -74,7 +74,7 @@ resource "aws_elb" "elb" {
     healthy_threshold = 3
     unhealthy_threshold = 5
     timeout = 60
-    target = "TCP:80"
+    target = "TCP:8000"
     interval = 90
   }
 

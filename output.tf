@@ -7,9 +7,9 @@ output "proxy_ip" {
 output "kong_dns" {
 	value = "${module.elb.dns_name}"
 }
-output "bastion_ip" {
-  value = "${module.bastion.public_ip}"
-}
+# output "bastion_ip" {
+#   value = "${module.bastion.public_ip}"
+# }
 output "dashboard_ip" {
   value = "${module.dashboard.public_ip}"
 }

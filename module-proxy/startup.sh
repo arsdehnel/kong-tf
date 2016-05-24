@@ -14,25 +14,23 @@ sudo yum install -y kong.rpm --nogpgcheck
 # connect to them when we run the `kong start` command
 # ************************************************************************
 
-# echo "##################################" >> hosts
-# echo "# Cassandra connection information" >> hosts
-# echo "# from terraform startup script:" >> hosts
-# echo "database: cassandra" >> hosts
-# echo "cassandra:" >> hosts
-# echo "  contact_points:" >> hosts
-# sed -i $'/# cassandra:/{r hosts\n d}' /etc/kong/kong.yml
+cp /etc/kong/kong.yml kong.yml
+
+echo "##################################" >> kong.yml
+echo "# Cassandra connection information" >> kong.yml
+echo "# from terraform startup script:" >> kong.yml
+echo "database: cassandra" >> kong.yml
+echo "cassandra:" >> kong.yml
+echo "  contact_points:" >> kong.yml
+echo "    - ec2-54-186-44-46.us-west-2.compute.amazonaws.com" >> kong.yml
+
+# sed -i $'/# cassandra:/{r hosts\n d}' kong.yml
 
 # cassandra:
   ######
   ## Contact points to your Cassandra cluster.
   # contact_points:
   #   - "127.0.0.1:9042"
-
-# # get cassandra instance details
-
-# # jam that into /etc/kong/kong.yml
-# # sed -i $'/# cassandra:/{r hosts\\n d}' /etc/kong/kong.yml",
-
 
 # ************************************************************************
 # START
@@ -42,32 +40,4 @@ sudo yum install -y kong.rpm --nogpgcheck
 # ************************************************************************
 
 # # start Kong
-# /usr/local/bin/kong start -c /home/ec2-user/kong.yml
-
-# this is some basic stuff to prove the instance is up and running
-# sudo yum -y update
-# sudo yum -y install nginx
-# sudo service nginx start    
-
-
-
-                # "echo \"database: cassandra\" >> hosts\n",
-                # "echo \"cassandra:\" >> hosts\n",
-                # "echo \"  contact_points:\" >> hosts\n",
-                # "cassandra_hosts=",
-                # {
-                #   "Fn::GetAtt": [
-                #     "CassandraWaitCondition",
-                #     "Data"
-                #   ]
-                # },
-                # "\n",
-                # "cassandra_hosts=$(echo $cassandra_hosts | awk -F\"{\" '{print $2}')\n",
-                # "cassandra_hosts=$(echo $cassandra_hosts | awk -F\"}\" '{print $1}')\n",
-                # "IFS=', ' read -a host_array <<< \"$cassandra_hosts\"\n",
-                # "for i in \"${host_array[@]}\"\n",
-                # "do\n",
-                # "   hostName=$(echo $i | awk -F\":\" '{print $1}')\n",
-                # "   echo -e \"    - $hostName\"  >> hosts\n",
-                # "done;\n",
-                # "sed -i $'/# cassandra:/{r hosts\\n d}' /etc/kong/kong.yml\n",
+/usr/local/bin/kong start -c /home/ec2-user/kong.yml

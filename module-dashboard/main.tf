@@ -62,6 +62,7 @@ resource "aws_instance" "dashboard" {
     ami                         = "${var.dashboard_ami}"
     vpc_security_group_ids      = ["${aws_security_group.dashboard.id}"]
     subnet_id                   = "${var.public_subnet_id}"
+    associate_public_ip_address = true
 
     provisioner "remote-exec" {
         script = "${path.module}/startup.sh"

@@ -21,6 +21,7 @@ resource "aws_security_group" "cassandra" {
         cidr_blocks = ["0.0.0.0/0"]
     }  
 
+    # datastax opscenter
     ingress {
         from_port       = 8888
         to_port         = 8888
@@ -29,20 +30,20 @@ resource "aws_security_group" "cassandra" {
     }    
 
     # tcp
-    ingress {
-        from_port = 0
-        to_port = 65535
-        protocol = "tcp"
-        self = true
-    }
+    # ingress {
+    #     from_port = 0
+    #     to_port = 65535
+    #     protocol = "tcp"
+    #     self = true
+    # }
 
-    # udp
-    ingress {
-        from_port = 0
-        to_port = 65535
-        protocol = "udp"
-        self = true
-    }
+    # # udp
+    # ingress {
+    #     from_port = 0
+    #     to_port = 65535
+    #     protocol = "udp"
+    #     self = true
+    # }
 
     ###############
     # proxy       #
@@ -94,9 +95,9 @@ resource "aws_instance" "cassandra" {
     user_data = "--clustername kong-qa --totalnodes 1 --version community"
     associate_public_ip_address = true
 
-    # provisioner "remote-exec" {
-    #     script = "${path.module}/startup.sh"
-    # }
+    provisioner "remote-exec" {
+        script = "${path.module}/startup.sh"
+    }
 
     tags {
         Name = "${var.name_prefix}cassandra"

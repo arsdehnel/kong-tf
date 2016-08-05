@@ -40,4 +40,4 @@ echo "    - ec2-54-186-44-46.us-west-2.compute.amazonaws.com" >> kong.yml
 # ************************************************************************
 
 # # start Kong
-/usr/local/bin/kong start -c /home/ec2-user/kong.yml
+# /usr/local/bin/kong start -c /home/ec2-user/kong.yml

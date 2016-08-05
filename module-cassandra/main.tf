@@ -72,6 +72,13 @@ resource "aws_security_group" "cassandra" {
     #     cidr_blocks = ["${var.source_cidr_block}"]
     # }
 
+    egress {
+        from_port   = 1
+        to_port     = 65535
+        protocol    = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }    
+
     tags {
         stack_name = "${var.stack_name}"
         environment = "${var.environment}"

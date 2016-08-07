@@ -30,20 +30,20 @@ resource "aws_security_group" "cassandra" {
     }    
 
     # tcp
-    # ingress {
-    #     from_port = 0
-    #     to_port = 65535
-    #     protocol = "tcp"
-    #     self = true
-    # }
+    ingress {
+        from_port = 0
+        to_port = 65535
+        protocol = "tcp"
+        self = true
+    }
 
     # # udp
-    # ingress {
-    #     from_port = 0
-    #     to_port = 65535
-    #     protocol = "udp"
-    #     self = true
-    # }
+    ingress {
+        from_port = 0
+        to_port = 65535
+        protocol = "udp"
+        self = true
+    }
 
     ###############
     # proxy       #
@@ -53,7 +53,8 @@ resource "aws_security_group" "cassandra" {
         from_port = 9042
         to_port = 9042
         protocol = "tcp"
-        security_groups = ["${var.proxy_sec_grp_id}"]
+        # security_groups = ["${var.proxy_sec_grp_id}"]
+        cidr_blocks     = ["0.0.0.0/0"]
     }
 
     # allow traffic for TCP 9160 (Cassandra Thrift clients)
@@ -61,16 +62,18 @@ resource "aws_security_group" "cassandra" {
         from_port = 9160
         to_port = 9160
         protocol = "tcp"
-        security_groups = ["${var.proxy_sec_grp_id}"]
+        # security_groups = ["${var.proxy_sec_grp_id}"]
+        cidr_blocks     = ["0.0.0.0/0"]
     }
 
-    # // allow traffic for TCP 7199 (JMX)
-    # ingress {
-    #     from_port = 7199
-    #     to_port = 7199
-    #     protocol = "tcp"
-    #     cidr_blocks = ["${var.source_cidr_block}"]
-    # }
+    // allow traffic for TCP 7199 (JMX)
+    ingress {
+        from_port = 7199
+        to_port = 7199
+        protocol = "tcp"
+        cidr_blocks     = ["0.0.0.0/0"]        
+        # cidr_blocks = ["${var.source_cidr_block}"]
+    }
 
     egress {
         from_port   = 1
@@ -94,17 +97,17 @@ resource "aws_instance" "cassandra" {
         private_key = "${file(var.private_key_path)}"
     }
 
-	instance_type = "c3.large"
+	instance_type = "m3.medium"
 	key_name = "${var.key_pair_id}"
 	ami = "${var.cassandra_ami}"
 	vpc_security_group_ids = ["${aws_security_group.cassandra.id}"]
     subnet_id = "${var.cassandra_subnet_id}"
-    user_data = "--clustername kong-qa --totalnodes 1 --version community"
+    user_data = "--clustername kong-qa --totalnodes 1 --version community --release 2.2.4"
     associate_public_ip_address = true
 
-    provisioner "remote-exec" {
-        script = "${path.module}/startup.sh"
-    }
+    # provisioner "remote-exec" {
+    #     script = "${path.module}/startup.sh"
+    # }
 
     tags {
         Name = "${var.name_prefix}cassandra"

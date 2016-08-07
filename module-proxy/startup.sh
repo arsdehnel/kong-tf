@@ -22,7 +22,8 @@ echo "# from terraform startup script:" >> kong.yml
 echo "database: cassandra" >> kong.yml
 echo "cassandra:" >> kong.yml
 echo "  contact_points:" >> kong.yml
-echo "    - ec2-54-186-44-46.us-west-2.compute.amazonaws.com" >> kong.yml
+echo "    - ec2-54-218-120-202.us-west-2.compute.amazonaws.com" >> kong.yml
+# echo "    - ec2-54-186-44-46.us-west-2.compute.amazonaws.com" >> kong.yml
 
 # sed -i $'/# cassandra:/{r hosts\n d}' kong.yml
 
@@ -40,4 +41,4 @@ echo "    - ec2-54-186-44-46.us-west-2.compute.amazonaws.com" >> kong.yml
 # ************************************************************************
 
 # # start Kong
-# /usr/local/bin/kong start -c /home/ec2-user/kong.yml
+/usr/local/bin/kong start -c /home/ec2-user/kong.yml

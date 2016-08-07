@@ -2,9 +2,12 @@ variable "stack_name" {}
 variable "environment" {}
 variable "vpc_id" {}
 variable "key_pair_id" {}
-variable "cassandra_subnet_id" {}
-variable "cassandra_ami" {}
-variable "cassandra_version" {}
+variable "subnet_id" {}
+variable "ami" {}
+variable "version" {}
+variable "node_count" {
+    default = "1"
+}
 variable "private_key_path" {}
 variable "proxy_sec_grp_id" {}
 variable "name_prefix" {}
@@ -15,6 +18,12 @@ resource "aws_security_group" "cassandra" {
     description = "Internal proxy security"
     vpc_id      = "${var.vpc_id}"
 
+    tags {
+        stack_name = "${var.stack_name}"
+        environment = "${var.environment}"
+    }
+
+    # ssh from the public internet
     ingress {
         from_port   = 22
         to_port     = 22
@@ -22,15 +31,7 @@ resource "aws_security_group" "cassandra" {
         cidr_blocks = ["0.0.0.0/0"]
     }  
 
-    # datastax opscenter
-    ingress {
-        from_port       = 8888
-        to_port         = 8888
-        protocol        = "tcp"
-        cidr_blocks     = ["0.0.0.0/0"]
-    }    
-
-    # tcp
+    # tcp from self
     ingress {
         from_port = 0
         to_port = 65535
@@ -38,7 +39,7 @@ resource "aws_security_group" "cassandra" {
         self = true
     }
 
-    # # udp
+    # udp from self
     ingress {
         from_port = 0
         to_port = 65535
@@ -47,7 +48,7 @@ resource "aws_security_group" "cassandra" {
     }
 
     ###############
-    # proxy       #
+    # kong        #
     ###############
     # allow traffic for TCP 9042 (Cassandra clients)
     ingress {
@@ -67,7 +68,15 @@ resource "aws_security_group" "cassandra" {
         cidr_blocks     = ["0.0.0.0/0"]
     }
 
-    // allow traffic for TCP 7199 (JMX)
+    # datastax opscenter
+    ingress {
+        from_port       = 8888
+        to_port         = 8888
+        protocol        = "tcp"
+        cidr_blocks     = ["0.0.0.0/0"]
+    }    
+
+    # allow traffic for TCP 7199 (JMX)
     ingress {
         from_port = 7199
         to_port = 7199
@@ -76,17 +85,14 @@ resource "aws_security_group" "cassandra" {
         # cidr_blocks = ["${var.source_cidr_block}"]
     }
 
+    # access out to the public internet 
+    # mostly just for downloading packages and updates
     egress {
         from_port   = 1
         to_port     = 65535
         protocol    = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }    
-
-    tags {
-        stack_name = "${var.stack_name}"
-        environment = "${var.environment}"
-    }
 
 }
 
@@ -99,10 +105,10 @@ resource "aws_instance" "cassandra" {
 
 	instance_type = "m3.medium"
 	key_name = "${var.key_pair_id}"
-	ami = "${var.cassandra_ami}"
+	ami = "${var.ami}"
 	vpc_security_group_ids = ["${aws_security_group.cassandra.id}"]
-    subnet_id = "${var.cassandra_subnet_id}"
-    user_data = "--clustername kong-qa --totalnodes 1 --version community --release ${var.cassandra_version}"
+    subnet_id = "${var.subnet_id}"
+    user_data = "--clustername ${var.name_prefix}kong-${var.environment} --totalnodes ${var.node_count} --version community --release ${var.version}"
 
     tags {
         Name = "${var.name_prefix}cassandra"
@@ -112,11 +118,6 @@ resource "aws_instance" "cassandra" {
 
 }
 
-# resource "null_resource" "dummy_dependency" {
-#   depends_on = ["aws_instance.cassandra"]
-# }
-
-# output "depends_id" { value = "${null_resource.dummy_dependency.id}" }
 output "dns" {
     value = "${aws_instance.cassandra.private_dns}"
 }

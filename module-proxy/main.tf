@@ -71,7 +71,7 @@ resource "aws_instance" "proxy" {
     ami = "${var.proxy_ami}"
     vpc_security_group_ids = ["${aws_security_group.proxy.id}"]
     # vpc_security_group_ids = ["sg-ff31df99"]
-    associate_public_ip_address = true
+    # associate_public_ip_address = true
     subnet_id = "${var.proxy_subnet_id}"
 
     provisioner "local-exec" {
@@ -93,17 +93,3 @@ resource "aws_instance" "proxy" {
     }
 
 }
-
-# resource "null_resource" "proxy_startup" {
-#     depends_on = ["aws_instance.proxy"]
-
-#     provisioner "local-exec" {
-#       command = "scp -o StrictHostKeyChecking=no -i ${var.private_key_path} ${path.module}/kong-config.yml ec2-user@${aws_instance.proxy.public_ip}:/home/ec2-user/kong.yml"
-#     }
-
-#     # provisioner "remote-exec" {
-#     #     script = "${path.module}/startup.sh"
-#     # }
-
-# }
-

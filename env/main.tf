@@ -66,12 +66,13 @@ module "cassandra" {
     name_prefix             = "${var.name_prefix}"
 
     key_pair_id             = "kong"
-    cassandra_ami           = "${lookup(var.aws_cassandra_amis, var.aws_region)}"
-    cassandra_version       = "2.2.4"
+    ami                     = "${lookup(var.aws_cassandra_amis, var.aws_region)}"
+    version                 = "2.2.4"
     vpc_id                  = "${module.vpc.id}"
-    cassandra_subnet_id     = "${module.public_subnet.id}"
+    subnet_id               = "${module.public_subnet.id}"
     private_key_path        = "${var.private_key_path}"   
     proxy_sec_grp_id        = "${module.proxy.security_group_id}"
+    node_count              = "1"
 }
 
 module "elb" {

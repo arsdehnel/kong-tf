@@ -103,7 +103,6 @@ resource "aws_instance" "cassandra" {
 	vpc_security_group_ids = ["${aws_security_group.cassandra.id}"]
     subnet_id = "${var.cassandra_subnet_id}"
     user_data = "--clustername kong-qa --totalnodes 1 --version community --release ${var.cassandra_version}"
-    associate_public_ip_address = true
 
     tags {
         Name = "${var.name_prefix}cassandra"

@@ -22,7 +22,7 @@ echo "# from terraform startup script:" >> kong.yml
 echo "database: cassandra" >> kong.yml
 echo "cassandra:" >> kong.yml
 echo "  contact_points:" >> kong.yml
-echo "    - ec2-54-201-239-12.us-west-2.compute.amazonaws.com" >> kong.yml
+echo "    - ip-10-0-4-56.us-west-2.compute.internal" >> kong.yml
 
 # ************************************************************************
 # START

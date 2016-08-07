@@ -119,5 +119,5 @@ resource "aws_instance" "cassandra" {
 
 # output "depends_id" { value = "${null_resource.dummy_dependency.id}" }
 output "dns" {
-    value = "${aws_instance.cassandra.public_dns}"
+    value = "${aws_instance.cassandra.private_dns}"
 }

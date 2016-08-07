@@ -20,7 +20,6 @@ module "dashboard" {
 module "proxy" {
     source                  = "module-proxy"
 
-    # depends_on              = "${module.cassandra.id}"
     environment             = "${var.environment}"
     stack_name              = "${var.stack_name}"
     key_pair_id             = "kong"

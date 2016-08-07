@@ -41,6 +41,7 @@ module "cassandra" {
     stack_name              = "${var.stack_name}"
     key_pair_id             = "kong"
     cassandra_ami           = "${lookup(var.aws_cassandra_amis, var.aws_region)}"
+    cassandra_version       = "2.2.4"
     vpc_id                  = "vpc-7a02bb1e"
     cassandra_subnet_id     = "subnet-fbf5719f"
     private_key_path        = "${var.private_key_path}"   

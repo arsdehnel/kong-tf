@@ -4,6 +4,7 @@ variable "vpc_id" {}
 variable "key_pair_id" {}
 variable "cassandra_subnet_id" {}
 variable "cassandra_ami" {}
+variable "cassandra_version" {}
 variable "private_key_path" {}
 variable "proxy_sec_grp_id" {}
 variable "name_prefix" {}
@@ -102,7 +103,7 @@ resource "aws_instance" "cassandra" {
 	ami = "${var.cassandra_ami}"
 	vpc_security_group_ids = ["${aws_security_group.cassandra.id}"]
     subnet_id = "${var.cassandra_subnet_id}"
-    user_data = "--clustername kong-qa --totalnodes 1 --version community --release 2.2.4"
+    user_data = "--clustername kong-qa --totalnodes 1 --version community --release ${var.cassandra_version}"
     associate_public_ip_address = true
 
     # provisioner "remote-exec" {

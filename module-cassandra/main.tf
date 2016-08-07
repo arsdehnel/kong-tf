@@ -93,7 +93,6 @@ resource "aws_security_group" "cassandra" {
 resource "aws_instance" "cassandra" {
 
     connection {
-        # bastion_host = "${aws_instance.bastion.id}"
         user = "ubuntu"
         private_key = "${file(var.private_key_path)}"
     }
@@ -106,10 +105,6 @@ resource "aws_instance" "cassandra" {
     user_data = "--clustername kong-qa --totalnodes 1 --version community --release ${var.cassandra_version}"
     associate_public_ip_address = true
 
-    # provisioner "remote-exec" {
-    #     script = "${path.module}/startup.sh"
-    # }
-
     tags {
         Name = "${var.name_prefix}cassandra"
         stack_name = "${var.stack_name}"
@@ -118,8 +113,11 @@ resource "aws_instance" "cassandra" {
 
 }
 
-resource "null_resource" "dummy_dependency" {
-  depends_on = ["aws_instance.cassandra"]
-}
+# resource "null_resource" "dummy_dependency" {
+#   depends_on = ["aws_instance.cassandra"]
+# }
 
-output "depends_id" { value = "${null_resource.dummy_dependency.id}" }
+# output "depends_id" { value = "${null_resource.dummy_dependency.id}" }
+output "dns" {
+    value = "${aws_instance.cassandra.public_dns}"
+}

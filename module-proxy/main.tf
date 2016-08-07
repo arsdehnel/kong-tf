@@ -5,10 +5,11 @@ variable "key_pair_id" {}
 variable "proxy_subnet_id" {}
 variable "proxy_ami" {}
 variable "private_key_path" {}
-variable "cassandra_instance_id" {}
+# variable "cassandra_instance_id" {}
+variable "cassandra_dns" {}
 variable "elb_sec_grp_id" {}
 variable "name_prefix" {}
-variable "depends_id" {}
+# variable "depends_id" {}
 
 resource "aws_security_group" "proxy" {
   name        = "${var.name_prefix}sg_proxy"
@@ -61,12 +62,10 @@ resource "aws_security_group" "proxy" {
 resource "aws_instance" "proxy" {
 
     connection {
-        # bastion_host = "${aws_instance.bastion.id}"
         user = "ec2-user"
         private_key = "${file(var.private_key_path)}"
     }
 
-    # depends_on = ["${var.cassandra_instance_id}"]
     instance_type = "t2.micro"
     key_name = "${var.key_pair_id}"
     ami = "${var.proxy_ami}"
@@ -75,19 +74,17 @@ resource "aws_instance" "proxy" {
     associate_public_ip_address = true
     subnet_id = "${var.proxy_subnet_id}"
 
-    # provisioner "local-exec" {
-    #     command = "scp -i ${var.private_key_path} ${path.module}/kong-config.yml ec2-user@${aws_instance.proxy.public_ip}:/home/ec2-user/kong.yml"
-    # }
+    provisioner "local-exec" {
+        command = "sleep 300"
+    }
+
+    provisioner "local-exec" {
+        command = "sed 's/{cassandra_dns}/${var.cassandra_dns}/g' ${path.module}/startup_base.sh > ${path.module}/startup.sh"
+    }
 
     provisioner "remote-exec" {
         script = "${path.module}/startup.sh"
     }
-
-    # provisioner "remote-exec" {
-    #   inline = [
-    #     "/usr/local/bin/kong start -c /home/ec2-user/kong.yml"
-    #   ]
-    # }
 
     tags {
         Name = "${var.name_prefix}proxy"

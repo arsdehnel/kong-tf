@@ -1,7 +1,9 @@
 variable "name" {}
 variable "stack_name" {}
 variable "environment" {}
-variable "cidr" {}
+variable "cidr" {
+	default = "10.0.4.0/23"
+}
 variable "vpc_id" {}
 variable "route_table_id" {}
 variable "public" {}
@@ -20,14 +22,11 @@ resource "aws_subnet" "standard" {
     }
 }
 
-resource "aws_route_table_association" "public_qa_route_table_assoc" {
+resource "aws_route_table_association" "route_table_assoc" {
     subnet_id = "${aws_subnet.standard.id}"
     route_table_id = "${var.route_table_id}"
 }
 
 output "id" {
 	value = "${aws_subnet.standard.id}"
-}
-output "az" {
-	value = "${aws_subnet.standard.availability_zone}"
 }

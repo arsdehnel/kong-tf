@@ -40,10 +40,10 @@ resource "aws_route" "main" {
 ################################
 #  OUTPUT                      #
 ################################
-output "vpc_id" {
+output "id" {
     value = "${aws_vpc.main.id}"
 }
 
-output "main_route_table_id" {
+output "route_table_id" {
 	value = "${aws_route.main.route_table_id}"
 }

@@ -52,7 +52,6 @@ resource "aws_security_group" "dashboard" {
 resource "aws_instance" "dashboard" {
 
     connection {
-        # bastion_host = "${aws_instance.bastion.id}"
         user = "ubuntu"
         private_key = "${file(var.private_key_path)}"
     }

@@ -2,11 +2,13 @@ variable "name" {}
 variable "stack_name" {}
 variable "environment" {}
 variable "cidr" {
-	default = "10.0.4.0/23"
+	default = "10.0.0.0/24"
 }
 variable "vpc_id" {}
 variable "route_table_id" {}
-variable "public" {}
+variable "public" {
+	default = false
+}
 variable "az" {}
 
 resource "aws_subnet" "standard" {

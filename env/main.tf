@@ -18,7 +18,8 @@ module "public_subnet" {
     name                    = "public"
     stack_name              = "${var.stack_name}"
     environment             = "${var.environment}"
-    # cidr                    = "10.0.4.0/23"
+
+    cidr                    = "10.0.4.0/23"
     vpc_id                  = "${module.vpc.id}"
     route_table_id          = "${module.vpc.route_table_id}"
     public                  = true
@@ -54,8 +55,6 @@ module "proxy" {
     private_key_path        = "${var.private_key_path}"   
     elb_sec_grp_id          = "${module.elb.security_group_id}" 
     cassandra_dns           = "${module.cassandra.dns}"
-    # cassandra_instance_id   = "${module.cassandra.id}"
-    # depends_id              = "${module.cassandra.depends_id}"
 }
 
 module "cassandra" {
@@ -78,10 +77,11 @@ module "cassandra" {
 module "elb" {
 	source                  = "../module-elb"
 
+    stack_name              = "${var.stack_name}"
 	environment             = "${var.environment}"
-	stack_name              = "${var.stack_name}"
+    name_prefix             = "${var.name_prefix}"
+
     vpc_id                  = "${module.vpc.id}"
 	public_subnet_id        = "${module.public_subnet.id}"
 	proxy_instance_id       = "${module.proxy.instance_id}"
-    name_prefix             = "${var.name_prefix}"
 }

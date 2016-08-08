@@ -61,35 +61,36 @@ resource "aws_security_group" "proxy" {
 
 resource "aws_instance" "proxy" {
 
-    connection {
-        user = "ec2-user"
-        private_key = "${file(var.private_key_path)}"
-    }
-
     instance_type = "t2.micro"
     key_name = "${var.key_pair_id}"
     ami = "${var.proxy_ami}"
     vpc_security_group_ids = ["${aws_security_group.proxy.id}"]
-    # vpc_security_group_ids = ["sg-ff31df99"]
-    # associate_public_ip_address = true
     subnet_id = "${var.proxy_subnet_id}"
 
-    provisioner "local-exec" {
-        command = "sleep 300"
-    }
-
-    provisioner "local-exec" {
-        command = "sed 's/{cassandra_dns}/${var.cassandra_dns}/g' ${path.module}/startup_base.sh > ${path.module}/startup.sh"
-    }
-
-    provisioner "remote-exec" {
-        script = "${path.module}/startup.sh"
+    connection {
+        user = "ec2-user"
+        private_key = "${file(var.private_key_path)}"
     }
 
     tags {
         Name = "${var.name_prefix}proxy"
         stack_name = "${var.stack_name}"
         environment = "${var.environment}"
+    }
+
+    # this is a hack to give Cassandra 5 minutes to boot up and be ready for Kong to connect
+    provisioner "local-exec" {
+        command = "sleep 300"
+    }
+
+    # throw the cassandra DNS into the startup script
+    provisioner "local-exec" {
+        command = "sed 's/{cassandra_dns}/${var.cassandra_dns}/g' ${path.module}/startup_base.sh > ${path.module}/startup.sh"
+    }
+
+    # move the startup script to the remote and run it
+    provisioner "remote-exec" {
+        script = "${path.module}/startup.sh"
     }
 
 }
